@@ -1,4 +1,4 @@
-#!/usr/local/bin/python python3
+#!/usr/local/bin/python
 """Hello World Multi Linguas.
 
 Dependendo da lingua configurada no ambiente o programa exibe a mensagem
