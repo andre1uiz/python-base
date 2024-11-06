@@ -33,19 +33,30 @@ if arguments[0] not in cmds:
 if arguments[0] == "read":
     for line in open(filepath, 'r'):
         title, tag, text = line.split("\t")
-        if tag.lower() == arguments[1].lower():
-            print(f"Title: {title}")
-            print(f"text: {text}")
-            print("*"*30)
-
-    
+        try:
+            if tag.lower() == arguments[1].lower():
+                print(f"Title: {title}")
+                print(f"text: {text}")
+                print("*"*30)
+        except IndexError as e:
+            print(str(e))
+            print("You must inform the tag from the note")
+            sys.exit(1)
+  
 if arguments[0] == "new":
-    title = arguments[1] #TODO: add exception
-    text = [
-        f"{title}",
-        input("tag:").strip(),
-        input("text:\n").strip(),
-    ]
-    #\t
-    with open(filepath, 'a') as file_:
-        file_.write("\t".join(text) + "\n")
+    try:
+        title = arguments[1]
+        text = [
+            f"{title}",
+            input("tag:").strip(),
+            input("text:\n").strip(),
+        ]
+
+        with open(filepath, 'a') as file_:
+            file_.write("\t".join(text) + "\n")
+
+    except IndexError as e:
+        print(f"[Error] {str(e)}")
+        print("You must give a title to a new note as follows: new title")
+        #\t
+    
