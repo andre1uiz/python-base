@@ -1,21 +1,28 @@
 #!/app/python-base/.venv/bin/python
 import os
 import logging
+from logging import handlers
+
 #BOILERPLATE
 #TODO: usar função
 #TODO: usar lib (loguru)
 log_level = os.getenv("LOG_LEVEL","WARNING").upper()
 log = logging.Logger("teste", log_level)
-ch = logging.StreamHandler() #Console\ Terminal \ stderr
-ch.setLevel(log_level)
+#ch = logging.StreamHandler() #Console\ Terminal \ stderr
+#ch.setLevel(log_level)
 #formatação
+fh = handlers.RotatingFileHandler("meulog.log", #nome do arquivo que gravará o log
+                                  maxBytes=300, #10**6 em uma app real - recomendação
+                                  backupCount=10)#vai manter os 10 ultimos arquivos de logging 
+fh.setLevel(log_level)
+
 fmt = logging.Formatter(
     "%(asctime)s\t%(name)s\t%(levelname)s\t"
     "l:%(lineno)d\tf:%(filename)s:\t%(message)s"
 )
-
-ch.setFormatter(fmt)
-log.addHandler(ch)
+fh.setFormatter(fmt)
+#ch.setFormatter(fmt)
+log.addHandler(fh)
 
 print("-Sem formatação")
 logging.debug("Mensagem para o dev, qe, sysadmin")
