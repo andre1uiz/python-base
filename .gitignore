@@ -1,4 +1,6 @@
 .venv
 /notes.txt
 /names.txt
-prefixcalc.log
+/prefixcalc.log
+/reservas.txt
+/quartos.txt
