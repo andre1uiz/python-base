@@ -53,19 +53,7 @@ reserved = []
 
 print(
     "Reserva de Quartos\n"
-     +"Código\t|\tDescrição\t|\tPreço\n")
-
-try:
-    for room in open("quartos.txt", "r").readlines():
-        code, name, price = room.split(',')
-        rooms[code]= {
-            "name" : name,
-            "price": int(price)
-        }
-
-        print(f'{code}\t|\t{name}\t|\t{price}')
-except:
-    log.error("Falha no arquivo de quartos.txt")
+     +"Código\t|\tDescrição\t|\tPreço\t\t|\tDisponibilidade\n")
 
 for room in open("reservas.txt", "r"):
     try:
@@ -73,16 +61,28 @@ for room in open("reservas.txt", "r"):
     except IndexError:
         break
 
-name = input("Informe o nome: ")
+try:
+    for room in open("quartos.txt", "r").readlines():
+        code, name, price = room.split(',')
+        rooms[int(code)]= {
+            "name" : name,
+            "price": float(price), #TODO: Decimal
+        }
+        is_available = "\U00002612" if int(code) in set(reserved) else "\U00002611"
+        print(f'{code}\t|\t{name}\t|\tR$ {float(price):.2f}\t|\t{is_available}')
+except Exception as e:
+    log.error(f"Falha no arquivo de quartos.txt {str(e)}")
+
+name = input("Informe o nome: ").strip()
 
 try:
-    room_number = int(input("Informe o número do quarto para locação: "))
+    room_number = int(input("Informe o número do quarto para locação: ").strip())
 except ValueError:
     log.error("Valor incorreto, você deve inserir o número do quarto")
     sys.exit(1)
 
 try:
-    days = int(input("informe o número de dias para reserva: "))
+    days = int(input("informe o número de dias para reserva: ").strip())
 except ValueError:
     log.error("A quantidade de dias deve ser um valor inteiro")
     sys.exit(1)
@@ -91,14 +91,14 @@ if int(room_number) in set(reserved):
     print("Desculpe, este quarto já foi reservado")
 else:
     try:
-        final_value = float(rooms[str(room_number)]["price"]) * days
+        final_value = float(rooms[room_number]["price"]) * days
     except KeyError:
         print("Desculpe, o quarto selecionado não existe.")
-        sys.exti(1)
+        sys.exit(1)
     try:
         with open("reservas.txt","a") as reserve:
             reserve.write(f"{name}, {room_number}, {days}\n")
-            print(f"{rooms[str(room_number)]["name"]} reservado por {days} dias a um valor final de R${final_value}")
+            print(f"{rooms[room_number]["name"]} reservado por {days} dias a um valor final de R${final_value:.2f}")
     except:
             log.error("Falha ao escrever o arquivo, reserva não efetivada")
 
